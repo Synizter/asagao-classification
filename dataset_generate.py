@@ -2,6 +2,7 @@ import cv2 as cv
 import numpy as np
 from glob import glob
 import math
+import matplotlib.pyplot as plt
 
 def resizeWithAspectRatio(im, w=None, h=None, inter=cv.INTER_AREA):
     dim = None
@@ -42,6 +43,12 @@ def generate_dataset(f_img_list, f_lab_list, target_size):
             if rect[2] > 100 or rect[3] > 100: nbr_of_cnt += 1
         crop = cv.bitwise_and(img_ori, img_ori, mask=mask) #create mask area of Asago
 
+        # cv.imshow("mask",resizeWithAspectRatio(crop, 800))
+        # cv.imshow("Label",resizeWithAspectRatio(img_lab, 800))
+
+        # cv.waitKey(0)
+        # cv.destroyAllWindows()
+
         print("------ Found contour {} (offset = 100px^2)".format(nbr_of_cnt))
         print("------ start generating dataset from contour")
         i = 1
@@ -52,19 +59,21 @@ def generate_dataset(f_img_list, f_lab_list, target_size):
             if rect[2] < 100 or rect[3] < 100: continue
             x,y,w,h = rect
 
-            patch_size = cal_crop_size(w,h,target_size) #the orignal contour size is varied, calculate new crop size to get all data
-            print(patch_size)
-            cc_img = img_ori[y:y + patch_size, x: x + patch_size,:] #cropped image from orignal
-            cc_msk = mask[y:y + patch_size, x: x + patch_size] # crop image from mask
+            new_w, new_h = cal_crop_size(w,h,target_size) #the orignal contour size is varied, calculate new crop size to get all data
+            cc_img = img_ori[y:y + new_h, x: x + new_w,:] #cropped image from orignal
+            cc_msk = mask[y:y + new_h, x: x + new_w] # crop image from mask
             
+            # plt.subplot(211),plt.imshow(cc_img)
+            # plt.subplot(212),plt.imshow(cc_msk)
+            # plt.show()
             div_img_and_save(cc_img, cc_msk, target_size) #Divide image accordingly to sqaure patch size *default 200 (200x200px)
             
             i+=1
 
-def cal_crop_size(w,h, target):
-    ps = max([w, h])
-    coeff = math.ceil(ps / target)
-    return target * coeff
+def cal_crop_size(w,h, target)->tuple:
+    coeff_h = math.ceil(h / target)
+    coeff_w = math.ceil(w / target)
+    return (target * coeff_w, target * coeff_h)
     
 
 nn = 1
@@ -84,7 +93,7 @@ def div_img_and_save(crop, mask, patch_size = 200):
 
 if __name__ == "__main__":
     import os
-    #remove previos save dataset
+    # remove previos save dataset
 
     if len(os.listdir('dataset/train')) != 0:
         print("Found previous dataset, attemp delete")
@@ -98,8 +107,8 @@ if __name__ == "__main__":
         for f in file_to_delete:
             os.remove('dataset/validation/' + f)
 
-    FILES_LABELS_IMG = sorted(glob('dataset/raw/*LABELED.jpg')) #get image with label mask
-    FILES_ORIG_IMG = list(sorted(set(glob('dataset/raw/*')) - set(FILES_LABELS_IMG)))
+    FILES_LABELS_IMG = sorted(glob('dataset/raw/labeled/*')) #get image with label mask
+    FILES_ORIG_IMG = list(sorted(set(glob('dataset/raw/not_labeled/*')) - set(FILES_LABELS_IMG)))
 
     if len(FILES_LABELS_IMG) > 0 and len(FILES_ORIG_IMG) > 0 and len(FILES_ORIG_IMG) == len(FILES_LABELS_IMG):
         generate_dataset(FILES_LABELS_IMG, FILES_ORIG_IMG, 256)
@@ -109,6 +118,7 @@ if __name__ == "__main__":
         print(FILES_ORIG_IMG)
 
 
+    
 
 
 
