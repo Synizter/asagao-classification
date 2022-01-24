@@ -43,8 +43,7 @@ def generate_mask(f_img_list, f_lab_list, target_size):
             rect = cv.boundingRect(c)
             if rect[2] > 100 or rect[3] > 100: nbr_of_cnt += 1
         crop = cv.bitwise_and(img_ori, img_ori, mask=mask) #create mask area of Asago
-
-        cv.imwrite("mask%s.png" % str(n).zfill(2),resizeWithAspectRatio(mask, 800))
+        cv.imwrite("actual_location_" + im[-35:], mask)
         n+= 1
         # cv.waitKey(0)
         # cv.destroyAllWindows()
@@ -133,32 +132,35 @@ if __name__ == "__main__":
     import os
     # remove previos save dataset
 
-    # if len(os.listdir('dataset/train')) != 0:
-    #     print("Found previous dataset, attemp delete")
-    #     file_to_delete = os.listdir('dataset/train')
-    #     for f in file_to_delete:
-    #         os.remove('dataset/train/' + f)
-    
-    # if len(os.listdir('dataset/validation')) != 0:
-    #     print("Found previous dataset, attemp delete")
-    #     file_to_delete = os.listdir('dataset/validation')
-    #     for f in file_to_delete:
-    #         os.remove('dataset/validation/' + f)
-
     FILES_LABELS_IMG = sorted(glob('dataset/raw/labeled/30m-1/*')) #get image with label mask
     FILES_ORIG_IMG = sorted(glob('dataset/raw/not_labeled/30m-1/*'))
 
     # uncomment to include 50m data
-    # FILES_LABELS_IMG += sorted(glob('dataset/raw/labeled/50m/*')) #get image with label mask
-    # FILES_ORIG_IMG += sorted(glob('dataset/raw/not_labeled/50m/*'))
+    FILES_LABELS_IMG += sorted(glob('dataset/raw/labeled/50m/*')) #get image with label mask
+    FILES_ORIG_IMG += sorted(glob('dataset/raw/not_labeled/50m/*'))
 
     if len(FILES_LABELS_IMG) > 0 and len(FILES_ORIG_IMG) > 0 and len(FILES_ORIG_IMG) == len(FILES_LABELS_IMG):
+        print("Program start!")
+        # if len(os.listdir('dataset/train')) != 0:
+        #     print("Found previous dataset, attemp delete")
+        #     file_to_delete = os.listdir('dataset/train')
+        #     for f in file_to_delete:
+        #         os.remove('dataset/train/' + f)
+        
+        # if len(os.listdir('dataset/validation')) != 0:
+        #     print("Found previous dataset, attemp delete")
+        #     file_to_delete = os.listdir('dataset/validation')
+        #     for f in file_to_delete:
+        #         os.remove('dataset/validation/' + f)
         # generate_dataset(FILES_LABELS_IMG, FILES_ORIG_IMG, 256)
+
         generate_mask(FILES_LABELS_IMG, FILES_ORIG_IMG, 256)
     else:
         print("cannot find target file")
         print(FILES_LABELS_IMG, len(FILES_LABELS_IMG))
         print(FILES_ORIG_IMG, len(FILES_ORIG_IMG))
+
+
 
 
     
