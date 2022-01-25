@@ -50,7 +50,7 @@ def generate_mask(f_img_list, f_lab_list, target_size):
 def generate_dataset(f_img_list, f_lab_list, target_size):
     #delete Yellow line in image
     lower = np.array([0, 180, 250], dtype="uint8")
-    upper = np.array([100, 255, 255], dtype="uint8")
+    upper = np.array([100, 255, 255], dtype="uint8")    
     
 
     for im, lab in zip(f_img_list, f_lab_list):
@@ -59,6 +59,11 @@ def generate_dataset(f_img_list, f_lab_list, target_size):
         img_ori = cv.imread(lab)
         
         mask = cv.inRange(img_lab, lower, upper)
+
+        # cv.imshow("TEST",resizeWithAspectRatio( img_lab, 800))
+        # cv.imshow("TSET", resizeWithAspectRatio(mask, 800))
+        # cv.waitKey(0)
+        # cv.destroyAllWindows()
 
         # # find  closed contour and fill
         cnt = cv.findContours(mask, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
@@ -69,43 +74,43 @@ def generate_dataset(f_img_list, f_lab_list, target_size):
             cv.drawContours(mask, [c], 0, (255, 255, 255), -1) # fill close area of contour
             rect = cv.boundingRect(c)
             if rect[2] > 100 or rect[3] > 100: nbr_of_cnt += 1
-        crop = cv.bitwise_and(img_ori, img_ori, mask=mask) #create mask area of Asago
+        # crop = cv.bitwise_and(img_ori, img_ori, mask=mask) #create mask area of Asago
 
-        # cv.imshow("mask",resizeWithAspectRatio(crop, 800))
-        # cv.imshow("Label",resizeWithAspectRatio(img_lab, 800))
+        cv.imshow("mask",resizeWithAspectRatio(mask, 800))
+        cv.imshow("Label",resizeWithAspectRatio(img_lab, 800))
 
         # cv.waitKey(0)
         # cv.destroyAllWindows()
 
-        print("------ Found contour {} (offset = 100px^2)".format(nbr_of_cnt))
-        print("------ start generating dataset from contour")
-        i = 1
+        # print("------ Found contour {} (offset = 100px^2)".format(nbr_of_cnt))
+        # print("------ start generating dataset from contour")
+        # i = 1
 
 
-        # cv.imshow("Labeled Image", resizeWithAspectRatio(img_lab, 600))
-        # cv.imshow("Mask", resizeWithAspectRatio(mask, 600))
-        for c in cnt:
-            # draw a rectangle
-            rect = cv.boundingRect(c)
-            if rect[2] < 100 or rect[3] < 100: continue
-            x,y,w,h = rect
+        # # cv.imshow("Labeled Image", resizeWithAspectRatio(img_lab, 600))
+        # # cv.imshow("Mask", resizeWithAspectRatio(mask, 600))
+        # for c in cnt:
+        #     # draw a rectangle
+        #     rect = cv.boundingRect(c)
+        #     if rect[2] < 100 or rect[3] < 100: continue
+        #     x,y,w,h = rect
 
-            new_w, new_h = cal_crop_size(w,h,target_size) #the orignal contour size is varied, calculate new crop size to get all data
-            cc_img = img_ori[y:y + new_h, x: x + new_w,:] #cropped image from orignal
-            cc_msk = mask[y:y + new_h, x: x + new_w] # crop image from mask
+        #     new_w, new_h = cal_crop_size(w,h,target_size) #the orignal contour size is varied, calculate new crop size to get all data
+        #     cc_img = img_ori[y:y + new_h, x: x + new_w,:] #cropped image from orignal
+        #     cc_msk = mask[y:y + new_h, x: x + new_w] # crop image from mask
             
-            # plt.subplot(211),plt.imshow(cc_img)
-            # plt.subplot(212),plt.imshow(cc_msk)
-            # plt.show()
+        #     # plt.subplot(211),plt.imshow(cc_img)
+        #     # plt.subplot(212),plt.imshow(cc_msk)
+        #     # plt.show()
 
-            # cv.imshow("crop", resizeWithAspectRatio(cc_img, 600))
-            # cv.imshow("crop_mask", resizeWithAspectRatio(cc_msk, 600))
-            # cv.waitKey(0)
+        #     # cv.imshow("crop", resizeWithAspectRatio(cc_img, 600))
+        #     # cv.imshow("crop_mask", resizeWithAspectRatio(cc_msk, 600))
+        #     # cv.waitKey(0)
             
-            div_img_and_save(cc_img, cc_msk, target_size) #Divide image accordingly to sqaure patch size *default 200 (200x200px)
+        #     div_img_and_save(cc_img, cc_msk, target_size) #Divide image accordingly to sqaure patch size *default 200 (200x200px)
             
-            i+=1
-        # cv.destroyAllWindows()
+        #     i+=1
+        # # cv.destroyAllWindows()
 
 def cal_crop_size(w,h, target)->tuple:
     coeff_h = math.ceil(h / target)
@@ -152,9 +157,9 @@ if __name__ == "__main__":
         #     file_to_delete = os.listdir('dataset/validation')
         #     for f in file_to_delete:
         #         os.remove('dataset/validation/' + f)
-        # generate_dataset(FILES_LABELS_IMG, FILES_ORIG_IMG, 256)
+        generate_dataset(FILES_LABELS_IMG, FILES_ORIG_IMG, 256)
 
-        generate_mask(FILES_LABELS_IMG, FILES_ORIG_IMG, 256)
+        # generate_mask(FILES_LABELS_IMG, FILES_ORIG_IMG, 256)
     else:
         print("cannot find target file")
         print(FILES_LABELS_IMG, len(FILES_LABELS_IMG))
