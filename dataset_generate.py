@@ -92,9 +92,9 @@ def asagao_save():
             # print("Image width | heigth (px) : {}|{}".format(new_w, new_h))
             # print("number of expected tiles : {}".format((new_w * new_h) / (256*256)))
             div_img_and_save(cc_img, cc_msk, 256)
-
+import time
 # None Asagao
-def non_asago_save():
+def non_asagao_save():
     mask_path = ['DJI_20211208095102_0006_mask.jpg',
     'DJI_20211208095108_0010_mask.jpg',
     'DJI_20211208095119_0019_mask.jpg',
@@ -107,52 +107,57 @@ def non_asago_save():
     'dataset/raw/not_labeled/50m/DJI_20211208102326_0003.JPG',
     'dataset/raw/not_labeled/50m/DJI_20211208102338_0009.JPG']
 
-    # read the mask
-    ref_mask = cv2.imread(mask_path[0])
-    image = cv2.imread(image_path[0])
-
-    patch_size = 256
-
-    #tile all image
     nbr = 1
+    for fmsk, fimg in zip(mask_path, image_path):
+        # read the mask
+        ref_mask = cv2.imread(fmsk)
+        image = cv2.imread(fimg)
 
-    for i in range(0,ref_mask.shape[0],patch_size):
-        for j in range(0,ref_mask.shape[1],patch_size):
-            # crop (pad if needed) the image
-            cc_data = ref_mask[i:i + patch_size, j:j + patch_size, :] # all ch
-            if cc_data.shape[0] < patch_size: #patch heigth
-                padding = patch_size - cc_data.shape[0]
-                patch = np.zeros((padding ,cc_data.shape[1],3))
-                # print("Heigth Stack",cc_data.shape, patch.shape, nn)    
-                cc_data = np.concatenate((cc_data, patch), axis=0)
-            if cc_data.shape[1] < patch_size: #patch width
-                padding = patch_size - cc_data.shape[1]
-                patch = np.zeros((cc_data.shape[0] ,padding, 3))
-                # print("Width Stack",cc_data.shape, patch.shape, nn)  
-                cc_data = np.concatenate((cc_data, patch), axis=1)
+        patch_size = 256
+        tic = time.time()
+        print("Writing non-asagao pixel in %s" % fimg)
+        #tile all image
+        for i in range(0,ref_mask.shape[0],patch_size):
+            for j in range(0,ref_mask.shape[1],patch_size):
+                # crop (pad if needed) the image
+                cc_data = ref_mask[i:i + patch_size, j:j + patch_size, :] # all ch
+                if cc_data.shape[0] < patch_size: #patch heigth
+                    padding = patch_size - cc_data.shape[0]
+                    patch = np.zeros((padding ,cc_data.shape[1],3))
+                    # print("Heigth Stack",cc_data.shape, patch.shape, nn)    
+                    cc_data = np.concatenate((cc_data, patch), axis=0)
+                if cc_data.shape[1] < patch_size: #patch width
+                    padding = patch_size - cc_data.shape[1]
+                    patch = np.zeros((cc_data.shape[0] ,padding, 3))
+                    # print("Width Stack",cc_data.shape, patch.shape, nn)  
+                    cc_data = np.concatenate((cc_data, patch), axis=1)
 
-            if(np.sum(cc_data) > 0):
-                continue
-            else:
-                cv2.imwrite("dataset/validation/non_asagao/non_asagao_mask_%s.png" % str(nbr).zfill(4), cc_data)
+                if(np.sum(cc_data) > 0):
+                    continue
+
+                else:
+                    cv2.imwrite("dataset/validation/non_asagao/non_asagao_mask_%s.png" % str(nbr).zfill(4), cc_data)
+                
+                # crop (pad if needed) the mask
+                cc_data = image[i:i + patch_size, j:j + patch_size, :] # all ch
+                if cc_data.shape[0] < patch_size: #patch heigth
+                    padding = patch_size - cc_data.shape[0]
+                    patch = np.zeros((padding ,cc_data.shape[1],3))
+                    # print("Heigth Stack",cc_data.shape, patch.shape, nn)    
+                    cc_data = np.concatenate((cc_data, patch), axis=0)
+                if cc_data.shape[1] < patch_size: #patch width
+                    padding = patch_size - cc_data.shape[1]
+                    patch = np.zeros((cc_data.shape[0] ,padding, 3))
+                    # print("Width Stack",cc_data.shape, patch.shape, nn)  
+                    cc_data = np.concatenate((cc_data, patch), axis=1)
+
+                cv2.imwrite("dataset/train/non_asagao/non_asagao_%s.png" % str(nbr).zfill(4), cc_data)
+
+                nbr+=1
+    
+        toc = time.time()
+        print("Done in %.8f" % (toc - tic))
             
-            # crop (pad if needed) the mask
-            cc_data = image[i:i + patch_size, j:j + patch_size, :] # all ch
-            if cc_data.shape[0] < patch_size: #patch heigth
-                padding = patch_size - cc_data.shape[0]
-                patch = np.zeros((padding ,cc_data.shape[1],3))
-                # print("Heigth Stack",cc_data.shape, patch.shape, nn)    
-                cc_data = np.concatenate((cc_data, patch), axis=0)
-            if cc_data.shape[1] < patch_size: #patch width
-                padding = patch_size - cc_data.shape[1]
-                patch = np.zeros((cc_data.shape[0] ,padding, 3))
-                # print("Width Stack",cc_data.shape, patch.shape, nn)  
-                cc_data = np.concatenate((cc_data, patch), axis=1)
-
-            cv2.imwrite("dataset/train/non_asagao/non_asagao_%s.png" % str(nbr).zfill(4), cc_data)
-
-            nbr+=1
-            
 
 
-asagao_save()
+non_asagao_save()
