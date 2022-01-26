@@ -51,11 +51,12 @@ def resizeWithAspectRatio(im, w=None, h=None, inter=cv2.INTER_AREA):
 #ASAGAO
 def asagao_save():
     # for mask,img in zip(mask_path, image_path):
-    mask_path = ['DJI_20211208095102_0006_mask.jpg',
-    'DJI_20211208095108_0010_mask.jpg',
-    'DJI_20211208095119_0019_mask.jpg',
-    'DJI_20211208102326_0003_mask.JPG',
-    'DJI_20211208102338_0009_mask.JPG']
+    mask_path = [
+        'Result/DJI_20211208095102_0006_mask.jpg',
+        'Result/DJI_20211208095108_0010_mask.jpg',
+        'Result/DJI_20211208095119_0019_mask.jpg',
+        'Result/DJI_20211208102326_0003_mask.JPG',
+        'Result/DJI_20211208102338_0009_mask.JPG']
 
     image_path = ['dataset/raw/not_labeled/30m-1/DJI_20211208095102_0006.JPG',
     'dataset/raw/not_labeled/30m-1/DJI_20211208095108_0010.JPG',
@@ -95,17 +96,34 @@ def asagao_save():
 import time
 # None Asagao
 def non_asagao_save():
-    mask_path = ['DJI_20211208095102_0006_mask.jpg',
-    'DJI_20211208095108_0010_mask.jpg',
-    'DJI_20211208095119_0019_mask.jpg',
-    'DJI_20211208102326_0003_mask.JPG',
-    'DJI_20211208102338_0009_mask.JPG']
+    mask_path = [
+        'Result/DJI_20211208095102_0006_mask.jpg',
+        'Result/DJI_20211208095108_0010_mask.jpg',
+        'Result/DJI_20211208095119_0019_mask.jpg',
+        'Result/DJI_20211208102326_0003_mask.JPG',
+        'Result/DJI_20211208102338_0009_mask.JPG',
+'Result/DJI_0007_mask.jpg',
+'Result/DJI_0008_mask.jpg',
+'Result/DJI_0010_mask.jpg',
+'Result/DJI_0016_mask.jpg',
+'Result/DJI_0017_mask.JPG',
+'Result/DJI_0012000_mask.tif',
+'Result/DJI_0012100_mask.tif']
 
     image_path = ['dataset/raw/not_labeled/30m-1/DJI_20211208095102_0006.JPG',
     'dataset/raw/not_labeled/30m-1/DJI_20211208095108_0010.JPG',
     'dataset/raw/not_labeled/30m-1/DJI_20211208095119_0019.JPG',
     'dataset/raw/not_labeled/50m/DJI_20211208102326_0003.JPG',
-    'dataset/raw/not_labeled/50m/DJI_20211208102338_0009.JPG']
+    'dataset/raw/not_labeled/50m/DJI_20211208102338_0009.JPG',
+    'dataset/raw/labeled/10m/DJI_0007.jpg',
+'dataset/raw/labeled/10m/DJI_0008.JPG',
+'dataset/raw/labeled/10m/DJI_0010.JPG',
+'dataset/raw/labeled/10m/DJI_0016.JPG',
+'dataset/raw/labeled/10m/DJI_0017.JPG',
+'dataset/raw/labeled/10m/DJI_0012000.tif',
+'dataset/raw/labeled/10m/DJI_0012100.tif',
+'dataset/raw/labeled/10m/DJI_0014100.tif',
+]
 
     nbr = 1
     for fmsk, fimg in zip(mask_path, image_path):
@@ -136,7 +154,7 @@ def non_asagao_save():
                     continue
 
                 else:
-                    cv2.imwrite("dataset/validation/non_asagao/non_asagao_mask_%s.png" % str(nbr).zfill(4), cc_data)
+                    cv2.imwrite("dataset/validation/not_asagao/non_asagao_mask_%s.png" % str(nbr).zfill(4), cc_data)
                 
                 # crop (pad if needed) the mask
                 cc_data = image[i:i + patch_size, j:j + patch_size, :] # all ch
@@ -151,13 +169,111 @@ def non_asagao_save():
                     # print("Width Stack",cc_data.shape, patch.shape, nn)  
                     cc_data = np.concatenate((cc_data, patch), axis=1)
 
-                cv2.imwrite("dataset/train/non_asagao/non_asagao_%s.png" % str(nbr).zfill(4), cc_data)
+                cv2.imwrite("dataset/train/not_asagao/non_asagao_%s.png" % str(nbr).zfill(4), cc_data)
 
                 nbr+=1
     
         toc = time.time()
         print("Done in %.8f" % (toc - tic))
             
+def purge_data(path):
+    import os
+    if len(os.listdir(path)) != 0:
+        file_to_delete = os.listdir(path)
+        for f in file_to_delete:
+            os.remove(path + f)
 
+
+def asgao_on_labeled_save():
+    global nn
+    mask_path = [
+    'Result/DJI_0007_mask.jpg',
+    'Result/DJI_0008_mask.jpg',
+    'Result/DJI_0010_mask.jpg',
+    'Result/DJI_0016_mask.jpg',
+    'Result/DJI_0017_mask.JPG',
+    'Result/DJI_0012000_mask.tif',
+    'Result/DJI_0012100_mask.tif',
+'Result/DJI_20211208102338_0009_mask.JPG',
+'Result/DJI_20211208102326_0003_mask.JPG',
+'Result/DJI_20211208095119_0019_mask.jpg',
+'Result/DJI_20211208095108_0010_mask.jpg',
+'Result/DJI_20211208095102_0006_mask.jpg'
+    ]
+
+    image_path = [
+        'dataset/raw/not_labeled/30m-1/DJI_20211208095102_0006.JPG',
+    'dataset/raw/not_labeled/30m-1/DJI_20211208095108_0010.JPG',
+    'dataset/raw/not_labeled/30m-1/DJI_20211208095119_0019.JPG',
+    'dataset/raw/labeled/10m/DJI_0007.jpg',
+    'dataset/raw/labeled/10m/DJI_0008.JPG',
+    'dataset/raw/labeled/10m/DJI_0010.JPG',
+    'dataset/raw/labeled/10m/DJI_0016.JPG',
+    'dataset/raw/labeled/10m/DJI_0017.JPG',
+    'dataset/raw/labeled/10m/DJI_0012000.tif',
+    'dataset/raw/labeled/10m/DJI_0014100.tif',
+    'dataset/raw/not_labeled/50m/DJI_20211208102326_0003.JPG',
+    'dataset/raw/not_labeled/50m/DJI_20211208102338_0009.JPG'
+]
+
+    for fmsk,fimg in zip(mask_path, image_path):
+
+        ref_mask = cv2.imread(fmsk)
+        image = cv2.imread(fimg)
+
+        if ref_mask is None:
+            print("Reference Mask file does not exsit")
+        elif  image is None:
+            print("Image file does not exsit")
+
+        else:
+            #erode the mask to get rid of labeled line
+
+            # find countour location on the reference mask
+            contours = cv2.findContours(ref_mask[:,:,0], cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            contours = contours[0] if len(contours) == 2 else contours[1]
+            eroded = cv2.erode(ref_mask, cv2.getStructuringElement(cv2.MORPH_CROSS, (3,3)), iterations=20)
+            # #check the result
+            for c in contours:
+                # draw a rectangle
+                rect = cv2.boundingRect(c)
+                if rect[2] < 30 or rect[3] < 30: continue
+                x,y,w,h = rect
+                # cv2.rectangle(ref_mask, (x,y), (x+w,y+h), (255, 0, 0), 10) # draw a rectangle center from contour
+                
+
+                new_w, new_h = cal_crop_size(w, h, 256) #the orignal contour size is varied, calculate new crop size to get all data
+                    
+                cc_img = image[y:y + new_h, x: x + new_w,:] #cropped image from orignal
+                cc_msk = eroded[y:y + new_h, x: x + new_w] # crop image from mask
+                
+                # plt.subplot(131),plt.imshow(cc_img)
+                # plt.subplot(132),plt.imshow(cc_msk)
+                # plt.subplot(133),plt.imshow(np.bitwise_and(cc_img, cc_msk))
+                # plt.show()
+
+                #crop
+                for i in range(0,cc_img.shape[0],256):
+                    for j in range(0,cc_img.shape[1],256):
+                        temp_data = cc_img[i:i + 256, j:j + 256, :] # all ch
+                        temp_mask = cc_msk[i:i + 256, j:j + 256] # only bw
+                        if(temp_data.shape[0] != temp_data.shape[1] or temp_data.shape[0] < 256 or temp_data.shape[1] < 256): 
+                            continue
+                        
+                        if(np.sum(np.bitwise_not(temp_mask)) > 0.0): 
+                            continue
+                        else:
+                            cv2.imwrite("dataset/validation/asagao/asagao_mask_%s.png" % str(nn).zfill(4), temp_mask)
+                            cv2.imwrite("dataset/train/asagao/asagao_%s.png" % str(nn).zfill(4), temp_data)
+                            print("Asagao tile no. %d saved" % nn)
+                        nn += 1
+
+purge_data("dataset/validation/asagao/")
+purge_data("dataset/validation/not_asagao/")
+purge_data("dataset/train/asagao/")
+purge_data("dataset/train/not_asagao/")
+
+asgao_on_labeled_save()
+asagao_save()
 
 non_asagao_save()
