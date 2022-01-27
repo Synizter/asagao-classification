@@ -150,10 +150,13 @@ def non_asagao_save():
                     # print("Width Stack",cc_data.shape, patch.shape, nn)  
                     cc_data = np.concatenate((cc_data, patch), axis=1)
 
+
                 if(np.sum(cc_data) > 0):
                     continue
-
+                if(cc_data.shape[0] != cc_data.shape[1] or cc_data.shape[0] < patch_size or cc_data.shape[1] < patch_size): 
+                    continue
                 else:
+                    print("writing data with shape ", cc_data.shape)
                     cv2.imwrite("dataset/validation/not_asagao/non_asagao_mask_%s.png" % str(nbr).zfill(4), cc_data)
                 
                 # crop (pad if needed) the mask
@@ -178,11 +181,13 @@ def non_asagao_save():
             
 def purge_data(path):
     import os
-    if len(os.listdir(path)) != 0:
-        file_to_delete = os.listdir(path)
-        for f in file_to_delete:
-            os.remove(path + f)
-
+    try:
+        if len(os.listdir(path)) != 0:
+            file_to_delete = os.listdir(path)
+            for f in file_to_delete:
+                os.remove(path + f)
+    except Exception as e:
+        print(e)
 
 def asgao_on_labeled_save():
     global nn

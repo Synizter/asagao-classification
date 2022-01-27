@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Dense, Dropout, Input
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dropout,Conv2DTranspose, concatenate
-from tensorflow.keras.optimizers import Adam
+
     
 
 def get_unet_model(w, h, c):
@@ -64,6 +64,5 @@ def get_unet_model(w, h, c):
     outputs = Conv2D(1, (1, 1), activation='sigmoid')(c9)
         
     model = Model(inputs=[s], outputs=[outputs])
-    opt = Adam(learning_rate = 0.001)
-    model.compile(optimizer=opt, loss='binary_crossentropy', metrics=['accuracy'])
-    model.summary()
+    # model.summary()
+    return model
