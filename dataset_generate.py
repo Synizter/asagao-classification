@@ -101,28 +101,14 @@ def non_asagao_save():
         'Result/DJI_20211208095108_0010_mask.jpg',
         'Result/DJI_20211208095119_0019_mask.jpg',
         'Result/DJI_20211208102326_0003_mask.JPG',
-        'Result/DJI_20211208102338_0009_mask.JPG',
-'Result/DJI_0007_mask.jpg',
-'Result/DJI_0008_mask.jpg',
-'Result/DJI_0010_mask.jpg',
-'Result/DJI_0016_mask.jpg',
-'Result/DJI_0017_mask.JPG',
-'Result/DJI_0012000_mask.tif',
-'Result/DJI_0012100_mask.tif']
+        'Result/DJI_20211208102338_0009_mask.JPG']
 
-    image_path = ['dataset/raw/not_labeled/30m-1/DJI_20211208095102_0006.JPG',
+    image_path = [
+    'dataset/raw/not_labeled/30m-1/DJI_20211208095102_0006.JPG',
     'dataset/raw/not_labeled/30m-1/DJI_20211208095108_0010.JPG',
     'dataset/raw/not_labeled/30m-1/DJI_20211208095119_0019.JPG',
     'dataset/raw/not_labeled/50m/DJI_20211208102326_0003.JPG',
-    'dataset/raw/not_labeled/50m/DJI_20211208102338_0009.JPG',
-    'dataset/raw/labeled/10m/DJI_0007.jpg',
-'dataset/raw/labeled/10m/DJI_0008.JPG',
-'dataset/raw/labeled/10m/DJI_0010.JPG',
-'dataset/raw/labeled/10m/DJI_0016.JPG',
-'dataset/raw/labeled/10m/DJI_0017.JPG',
-'dataset/raw/labeled/10m/DJI_0012000.tif',
-'dataset/raw/labeled/10m/DJI_0012100.tif',
-'dataset/raw/labeled/10m/DJI_0014100.tif',
+    'dataset/raw/not_labeled/50m/DJI_20211208102338_0009.JPG'
 ]
 
     nbr = 1
@@ -192,13 +178,6 @@ def purge_data(path):
 def asgao_on_labeled_save():
     global nn
     mask_path = [
-    'Result/DJI_0007_mask.jpg',
-    'Result/DJI_0008_mask.jpg',
-    'Result/DJI_0010_mask.jpg',
-    'Result/DJI_0016_mask.jpg',
-    'Result/DJI_0017_mask.JPG',
-    'Result/DJI_0012000_mask.tif',
-    'Result/DJI_0012100_mask.tif',
 'Result/DJI_20211208102338_0009_mask.JPG',
 'Result/DJI_20211208102326_0003_mask.JPG',
 'Result/DJI_20211208095119_0019_mask.jpg',
@@ -210,13 +189,6 @@ def asgao_on_labeled_save():
         'dataset/raw/not_labeled/30m-1/DJI_20211208095102_0006.JPG',
     'dataset/raw/not_labeled/30m-1/DJI_20211208095108_0010.JPG',
     'dataset/raw/not_labeled/30m-1/DJI_20211208095119_0019.JPG',
-    'dataset/raw/labeled/10m/DJI_0007.jpg',
-    'dataset/raw/labeled/10m/DJI_0008.JPG',
-    'dataset/raw/labeled/10m/DJI_0010.JPG',
-    'dataset/raw/labeled/10m/DJI_0016.JPG',
-    'dataset/raw/labeled/10m/DJI_0017.JPG',
-    'dataset/raw/labeled/10m/DJI_0012000.tif',
-    'dataset/raw/labeled/10m/DJI_0014100.tif',
     'dataset/raw/not_labeled/50m/DJI_20211208102326_0003.JPG',
     'dataset/raw/not_labeled/50m/DJI_20211208102338_0009.JPG'
 ]
