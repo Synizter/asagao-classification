@@ -299,7 +299,33 @@ del f_img, f_msk, image, im_bw, thresh, mask, msk, img
 history = model.fit(x=aug.flow(X_train, y_train, batch_size=8),
                     verbose = 1,
                     batch_size = 8,
-                    epochs = 100,
+                    epochs = 300,
                     validation_data = (X_test, y_test),
                     shuffle = False)
 model.save("50m_30m_10mUnet_All")
+
+
+import matplotlib.pyplot as plt
+
+acc = history.history['accuracy']
+loss = history.history['loss']
+val_acc = history.history['val_accuracy']
+val_loss = history.history['val_loss']
+epochs = range(len(acc))
+
+plt.figure(figsize=(15, 6))
+plt.subplot(1, 2, 1)
+plt.plot(epochs, acc, 'b', label='Training acc',linewidth=2)
+plt.plot(epochs, val_acc, 'r--', label='Validation acc',linewidth=2)
+plt.title('Training  accuracy')
+plt.legend()
+
+plt.subplot(1, 2, 2)
+
+plt.plot(epochs, loss, 'b', label='Training loss')
+
+plt.plot(epochs, val_loss, 'k', label='Validationloss ')
+plt.title('Training loss')
+plt.legend()
+
+plt.show()
